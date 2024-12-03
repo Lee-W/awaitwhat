@@ -2,7 +2,11 @@
 
 Tells you what waits for what in an `async/await` program.
 
-### Python 3.10.0a1
+### Build
+
+`uv build`
+
+### ⚠️ Python 3.10.0a1
 
 It seems the API was changed in 3.10 and the C extension doesn't compile.
 I'll investigate...
@@ -13,7 +17,9 @@ You'll need `apk add build-base openssl-dev libffi-dev`
 
 ## 2019 Sprint Setup
 
-Comms: https://gitter.im/awaitwhat/community
+This is out of date, kept for historical reasons.
+
+Comms: https://gitter.im/awaitwhat/community (no longer in use)
 
 * Python 3.9, Python 3.8 (preferred) or Python 3.7
 * Your platform dev tools (compiler, etc).
@@ -173,3 +179,41 @@ https://mail.python.org/archives/list/async-sig@python.org/thread/6E2LRVLKYSMGEA
 >
 > Thanks,
 > D.
+
+### Build for Alpine
+
+This is out of date...
+
+```sh
+cd /src
+apk update
+apk add build-base openssl-dev libffi-dev curl
+curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+cp -a ~/.poetry/lib/poetry/_vendor/py3.8 ~/.poetry/lib/poetry/_vendor/py3.9
+source $HOME/.poetry/env
+poetry install
+poetry run pytest
+env _PYTHON_HOST_PLATFORM=alpine_x86_64 poetry build
+```
+
+### Manylinux2014
+
+This is out of date...
+
+🚧 Work in progress, doesn't tag the wheels correctly 🚧
+
+`docker run -v (pwd):/src -it quay.io/pypa/manylinux2014_x86_64 sh`
+
+```sh
+curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | /opt/python/cp38-cp38/bin/python
+source $HOME/.poetry/env
+cd /src
+poetry env use /opt/python/cp38-cp38/bin/python
+poetry install
+poetry run pytest
+poetry build
+poetry env use /opt/python/cp39-cp39/bin/python
+poetry install
+poetry run pytest
+poetry build
+```
